@@ -1,0 +1,15 @@
+When writing mudlet scripts or packages, sometimes you care about mudlet LUA script execution order (when profile loads), because you may have dependencies between your scripts. And I could not find this information explicitly stated anywhere else.
+
+Here is what I found:
+-Based on testing, mudlet loads scripts top to bottom (as they are seen in the UI) and parent before child.
+-Mudlet documentation does not explicitly mention script execution order to confirm this.
+-Here are some ways people solve script order:
+	--assume parent-before-child execution (appears reliable based on investigation of the mudlet source code (script.cpp and tscript.cpp) does appear to confirm parent-before-child script install/load/execution (whatever you call the order the scripts run when a profile gets loaded).
+	--assume top-to-bottom (seems consistent so far, but does not seem like a good thing to rely on, in my opinion)
+	--use events (sysLoadEvent) to have code run after all scripts have been loaded... an init function that relies on having all the files loaded before executing, for example
+	--use timers to have some stuff be delayed by a fraction of a second before doing init
+
+Additional note, these ways of solving script ordering have some implications of scripts being re-loaded when they are edited and saved during development, scripts re-run, get re-initialized, etc. depending on exactly how it is coded.
+
+If you have corrections or additional information about this, feel free to open a PR.
+
